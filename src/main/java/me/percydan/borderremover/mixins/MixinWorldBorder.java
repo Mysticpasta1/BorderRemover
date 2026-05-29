@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WorldBorder.class)
 public abstract class MixinWorldBorder {
     @Shadow
-    private int absouluteMaxSize;
+    int absoluteMaxSize;
     @Shadow
     private WorldBorder.BorderExtent extent;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void handleConstructor(CallbackInfo ci) {
-        this.absouluteMaxSize = Integer.MAX_VALUE;
-        this.extent = ((WorldBorder) (Object) this).new StaticArea(4294967294D);
+        this.absoluteMaxSize = Integer.MAX_VALUE;
+        this.extent = ((WorldBorder) (Object) this).new StaticBorderExtent(4294967294D);
     }
 }
