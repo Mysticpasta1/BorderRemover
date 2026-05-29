@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinPlayerEntity {
     @Redirect(method = "tick", at = @At(target = "Lnet/minecraft/util/Mth;clamp(DDD)D", value = "INVOKE"))
     private double redirectClamp(double value, double min, double max) {
-        return value;
+        return Mth.clamp(value, -2000000000D, 2000000000D);
     }
 }

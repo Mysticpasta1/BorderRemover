@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "borderremover.refmap.json",
   "mixins": [
+    "ForceLoadCommandMixin",
+    "LevelReaderMixin",
     "MixinAquiferSampler",
     "MixinDimensionType",
     "MixinEntity",

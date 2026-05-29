@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinMinecraftServer {
     @Inject(method = "getAbsoluteMaxWorldSize", at = @At("HEAD"), cancellable = true)
     public void getMaxWorldBorderRadius(CallbackInfoReturnable<Integer> ci) {
-        ci.setReturnValue(Integer.MAX_VALUE);
+        ci.setReturnValue(2000000000);
         ci.cancel();
     }
 }

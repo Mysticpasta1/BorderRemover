@@ -18,6 +18,6 @@ public abstract class MixinWorldBorderProperties {
 
     @Inject(method = "<init>(DDDDIIDJD)V", at = @At("RETURN"))
     private void handleConstructor(double centerX, double centerZ, double damagePerBlock, double buffer, int warningBlocks, int warningTime, double size, long targetRemainingTime, double targetSize, CallbackInfo ci) {
-        this.size = Long.MAX_VALUE;
+        this.size = 4000000000D;
     }
 }

@@ -17,6 +17,6 @@ public abstract class MixinWorldBorder {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void handleConstructor(CallbackInfo ci) {
         this.absoluteMaxSize = Integer.MAX_VALUE;
-        this.extent = ((WorldBorder) (Object) this).new StaticBorderExtent(4294967294D);
+        this.extent = ((WorldBorder) (Object) this).new StaticBorderExtent(4000000000D);
     }
 }
