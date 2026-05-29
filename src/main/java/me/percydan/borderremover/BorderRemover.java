@@ -1,34 +1,40 @@
 package me.percydan.borderremover;
 
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import me.percydan.borderremover.config.WorldGenOptions;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.command.CommandManager;
+import me.percydan.borderremover.config.Config;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class BorderRemover implements ModInitializer {
-    public static WorldGenOptions config;
+@Mod("borderremover")
+public class BorderRemover {
+    public static Config config;
 
-    @Override
-    public void onInitialize() {
-        //Flyspeed command
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager.literal("flyspeed").requires((commandSource) -> {
-                return commandSource.hasPermissionLevel(2);
-            }).then(CommandManager.argument("level", FloatArgumentType.floatArg()).executes((commandContext) -> {
-                        PlayerEntity player = commandContext.getSource().getPlayer();
-                        assert player != null;
-                        player.getAbilities().setFlySpeed(FloatArgumentType.getFloat(commandContext, "level") * 0.05f);
-                        player.sendAbilitiesUpdate();
-                        return 1;
-                    }
-            )));
-        });
+    public BorderRemover() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+        MinecraftForge.EVENT_BUS.register(this);
 
-        AutoConfig.register(WorldGenOptions.class, Toml4jConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(WorldGenOptions.class).getConfig();
+        Config.register();
+        config = Config.INSTANCE;
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event) {
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(Commands.literal("flyspeed").requires((commandSource) ->
+                commandSource.hasPermission(2)
+        ).then(Commands.argument("level", FloatArgumentType.floatArg()).executes((commandContext) -> {
+            Player player = commandContext.getSource().getPlayerOrException();
+            player.getAbilities().setFlyingSpeed(FloatArgumentType.getFloat(commandContext, "level") * 0.05f);
+            player.onUpdateAbilities();
+            return 1;
+        })));
     }
 }

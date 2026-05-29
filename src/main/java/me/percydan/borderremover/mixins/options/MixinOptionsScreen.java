@@ -1,15 +1,14 @@
 package me.percydan.borderremover.mixins.options;
 
-import me.percydan.borderremover.config.WorldGenOptions;
-import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.OptionsScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.GridWidget;
-import net.minecraft.text.Text;
+import me.percydan.borderremover.config.ClientConfig;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,15 +23,14 @@ public abstract class MixinOptionsScreen implements IMixinScreen {
         int lastX = 0;
         int lastY = 0;
         int buttonCount = 0;
-        List<ClickableWidget> widgets = null;
-        ButtonWidget doneButton = null;
+        List<AbstractWidget> widgets = null;
+        Button doneButton = null;
 
-        // Minecraft 1.19.3
-        for (Drawable drawable : getDrawables()) {
-            if (drawable instanceof GridWidget gridWidget) {
+        for (Renderable drawable : getRenderables()) {
+            if (drawable instanceof GridLayout gridWidget) {
                 widgets = ((IMixinGridWidget) gridWidget).getChildren();
-                for (ClickableWidget clickableWidget : widgets) {
-                    if (clickableWidget instanceof ButtonWidget button) {
+                for (AbstractWidget clickableWidget : widgets) {
+                    if (clickableWidget instanceof Button button) {
                         if (button.getWidth() != 200) {
                             lastX = button.getX();
                             lastY = button.getY();
@@ -45,10 +43,9 @@ public abstract class MixinOptionsScreen implements IMixinScreen {
             }
         }
 
-        // Minecraft 1.19.4 (and above?)
         if (widgets == null) {
-            for (Drawable drawable : getDrawables()) {
-                if (drawable instanceof ButtonWidget button) {
+            for (Renderable drawable : getRenderables()) {
+                if (drawable instanceof Button button) {
                     if (button.getWidth() != 200) {
                         lastX = button.getX();
                         lastY = button.getY();
@@ -70,11 +67,9 @@ public abstract class MixinOptionsScreen implements IMixinScreen {
             doneButton.setY(doneButton.getY() + doneButton.getHeight() + 5);
         }
 
-        callAddDrawableChild(ButtonWidget.builder(Text.translatable("text.autoconfig.borderremover.title"), (button) -> {
-                    MinecraftClient.getInstance().setScreen(AutoConfig.getConfigScreen(WorldGenOptions.class, (Screen) (Object) this).get());
+        callAddRenderableWidget(Button.builder(Component.translatable("text.autoconfig.borderremover.title"), (button) -> {
+                    Minecraft.getInstance().setScreen(ClientConfig.createConfigScreen((Screen) (Object) this));
                 }
-        ).dimensions(posX, posY, 150, 20).build());
+        ).bounds(posX, posY, 150, 20).build());
     }
-
 }
-

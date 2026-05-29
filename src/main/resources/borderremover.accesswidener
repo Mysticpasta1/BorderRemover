@@ -1,6 +1,0 @@
-accessWidener v1 named
-
-accessible class net/minecraft/world/border/WorldBorder$Area
-accessible class net/minecraft/world/border/WorldBorder$StaticArea
-accessible class net/minecraft/util/collection/LinkedBlockPosHashSet$Storage
-accessible class net/minecraft/world/gen/chunk/AquiferSampler$FluidLevel

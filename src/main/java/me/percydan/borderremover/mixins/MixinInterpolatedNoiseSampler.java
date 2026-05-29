@@ -2,9 +2,9 @@ package me.percydan.borderremover.mixins;
 
 import com.mojang.serialization.Codec;
 import me.percydan.borderremover.BorderRemover;
-import me.percydan.borderremover.config.WorldGenOptions;
-import net.minecraft.util.math.noise.InterpolatedNoiseSampler;
-import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
+import me.percydan.borderremover.config.Config;
+import net.minecraft.world.level.levelgen.synth.BlendedNoise;
+import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -15,12 +15,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(InterpolatedNoiseSampler.class)
+@Mixin(BlendedNoise.class)
 public abstract class MixinInterpolatedNoiseSampler {
     @Mutable
     @Shadow
     @Final
-    private static Codec<Double> SCALE_AND_FACTOR_RANGE;
+    private static Codec<Double> SCALE_RANGE;
 
     @Mutable
     @Shadow
@@ -37,10 +37,10 @@ public abstract class MixinInterpolatedNoiseSampler {
                     doubleValue = 684.412D,
                     ordinal = 0
             ),
-            method = "<init>(Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;DDDDD)V"
+            method = "<init>(Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;DDDDD)V"
     )
     private double setXZCoordinateScale(double original) {
-        return BorderRemover.config == null ? original : BorderRemover.config.xzCoordinateScale;
+        return BorderRemover.config == null ? original : BorderRemover.config.xzCoordinateScale.get();
     }
 
     @ModifyConstant(
@@ -48,22 +48,22 @@ public abstract class MixinInterpolatedNoiseSampler {
                     doubleValue = 684.412D,
                     ordinal = 1
             ),
-            method = "<init>(Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;DDDDD)V"
+            method = "<init>(Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;DDDDD)V"
     )
     private double setYCoordinateScale(double original) {
-        return BorderRemover.config == null ? original : BorderRemover.config.yCoordinateScale;
+        return BorderRemover.config == null ? original : BorderRemover.config.yCoordinateScale.get();
     }
 
-    @Inject(at = @At(value = "RETURN"), method = "<init>(Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;DDDDD)V")
-    private void setScaleAndFactorRange(OctavePerlinNoiseSampler lowerInterpolatedNoise, OctavePerlinNoiseSampler upperInterpolatedNoise, OctavePerlinNoiseSampler interpolationNoise, double xzScale, double yScale, double xzFactor, double yFactor, double smearScaleMultiplier, CallbackInfo ci) {
-        SCALE_AND_FACTOR_RANGE = Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE);
-        WorldGenOptions options = BorderRemover.config;
+    @Inject(at = @At(value = "RETURN"), method = "<init>(Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;DDDDD)V")
+    private void setScaleAndFactorRange(PerlinNoise lowerInterpolatedNoise, PerlinNoise upperInterpolatedNoise, PerlinNoise interpolationNoise, double xzScale, double yScale, double xzFactor, double yFactor, double smearScaleMultiplier, CallbackInfo ci) {
+        SCALE_RANGE = Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE);
+        Config options = BorderRemover.config;
         if (options == null)
             return;
 
-        String xzScaleMultiplier = options.xzScaleMultiplier;
+        String xzScaleMultiplier = options.xzScaleMultiplier.get();
         xzScaleMultiplier = xzScaleMultiplier.replace(",", "");
-        options.xzScaleMultiplier = xzScaleMultiplier;
+        options.xzScaleMultiplier.set(xzScaleMultiplier);
         double multiplier;
 
         try {
@@ -72,9 +72,9 @@ public abstract class MixinInterpolatedNoiseSampler {
         } catch (NumberFormatException e) {
         }
 
-        String yScaleMultiplier = options.yScaleMultiplier;
+        String yScaleMultiplier = options.yScaleMultiplier.get();
         yScaleMultiplier = yScaleMultiplier.replace(",", "");
-        options.yScaleMultiplier = yScaleMultiplier;
+        options.yScaleMultiplier.set(yScaleMultiplier);
 
         try {
             multiplier = Double.parseDouble(yScaleMultiplier);
