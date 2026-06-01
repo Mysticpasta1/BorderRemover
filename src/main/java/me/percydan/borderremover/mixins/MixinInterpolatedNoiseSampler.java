@@ -56,7 +56,7 @@ public abstract class MixinInterpolatedNoiseSampler {
 
     @Inject(at = @At(value = "RETURN"), method = "<init>(Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;Lnet/minecraft/world/level/levelgen/synth/PerlinNoise;DDDDD)V")
     private void setScaleAndFactorRange(PerlinNoise lowerInterpolatedNoise, PerlinNoise upperInterpolatedNoise, PerlinNoise interpolationNoise, double xzScale, double yScale, double xzFactor, double yFactor, double smearScaleMultiplier, CallbackInfo ci) {
-        SCALE_RANGE = Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE);
+        SCALE_RANGE = Codec.doubleRange(-Double.MAX_VALUE, Double.MAX_VALUE);
         Config options = BorderRemover.config;
         if (options == null)
             return;

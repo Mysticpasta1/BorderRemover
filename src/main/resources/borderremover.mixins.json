@@ -6,8 +6,8 @@
   "refmap": "borderremover.refmap.json",
   "mixins": [
     "ForceLoadCommandMixin",
-    "LevelReaderMixin",
     "MixinAquiferSampler",
+    "MixinBlockPos",
     "MixinDimensionType",
     "MixinEntity",
     "MixinInterpolatedNoiseSampler",
@@ -15,20 +15,25 @@
     "MixinMinecraftServer",
     "MixinOctavePerlinNoiseSampler",
     "MixinPlayerEntity",
+    "MixinSectionPos",
+    "MixinSectionStorage",
+    "LayerLightSectionStorageMixin",
+    "LightEngineMixin",
+    "LightEngineAccessor",
+    "SkyLightEngineAccessor",
+    "MixinServerPlayer",
     "MixinServerPlayNetWorkHandler",
     "MixinShardFarlands",
     "MixinWorld",
     "MixinWorldBorder",
     "MixinWorldBorderCommand",
+    "MixinWorldGenRegion",
     "MixinWorldBorderProperties",
+    "MixinConfiguredFeature",
+    "MixinChunkGenerator",
     "offset.MixinChunk",
     "offset.MixinChunkNoiseSampler",
     "offset.MixinChunkRandom"
-  ],
-  "client": [
-    "options.IMixinGridWidget",
-    "options.IMixinScreen",
-    "options.MixinOptionsScreen"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -10,7 +10,7 @@ public class Config {
 
     public ForgeConfigSpec.BooleanValue enableFarlands;
     public ForgeConfigSpec.BooleanValue shardFarlands;
-    public ForgeConfigSpec.IntValue genOffset;
+    public ForgeConfigSpec.ConfigValue<String> genOffset;
     public ForgeConfigSpec.DoubleValue xzCoordinateScale;
     public ForgeConfigSpec.DoubleValue yCoordinateScale;
     public ForgeConfigSpec.ConfigValue<String> xzScaleMultiplier;
@@ -29,7 +29,7 @@ public class Config {
 
         genOffset = builder
                 .comment("Terrain generation offset")
-                .defineInRange("genOffset", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                .define("genOffset", "0");
 
         xzCoordinateScale = builder
                 .comment("X/Z coordinate scale")

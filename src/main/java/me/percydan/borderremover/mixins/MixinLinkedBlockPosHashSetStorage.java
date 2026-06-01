@@ -1,6 +1,5 @@
 package me.percydan.borderremover.mixins;
 
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.lighting.SpatialLongSet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,7 +16,7 @@ public abstract class MixinLinkedBlockPosHashSetStorage {
 
     @Inject(method = "<clinit>", at = @At("RETURN"))
     private static void handleConstructor(CallbackInfo ci) {
-        X_BITS = Mth.log2(Integer.MAX_VALUE);
-        Z_BITS = Mth.log2(Integer.MAX_VALUE);
+        X_BITS = 28;
+        Z_BITS = 28;
     }
 }

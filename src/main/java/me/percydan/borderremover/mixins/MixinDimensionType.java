@@ -31,7 +31,7 @@ public abstract class MixinDimensionType {
                         .forGetter(DimensionType::hasSkyLight), Codec.BOOL.fieldOf("has_ceiling")
                         .forGetter(DimensionType::hasCeiling), Codec.BOOL.fieldOf("ultrawarm")
                         .forGetter(DimensionType::ultraWarm), Codec.BOOL.fieldOf("natural")
-                        .forGetter(DimensionType::natural), Codec.doubleRange(Integer.MIN_VALUE, Integer.MAX_VALUE).fieldOf("coordinate_scale")
+                        .forGetter(DimensionType::natural), Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf("coordinate_scale")
                         .forGetter(DimensionType::coordinateScale), Codec.BOOL.fieldOf("bed_works")
                         .forGetter(DimensionType::bedWorks), Codec.BOOL.fieldOf("respawn_anchor_works")
                         .forGetter(DimensionType::respawnAnchorWorks), Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y")
