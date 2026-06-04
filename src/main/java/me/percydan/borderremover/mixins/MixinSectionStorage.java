@@ -22,11 +22,11 @@ public abstract class MixinSectionStorage<R> {
     @Inject(method = "get", at = @At("RETURN"), cancellable = true)
     private void tryOldKeyOnMiss(long packed, CallbackInfoReturnable<Optional<R>> cir) {
         Optional<R> result = cir.getReturnValue();
-        if (result.isEmpty()) {
+        if (result != null && result.isEmpty()) {
             long oldKey = borderRemover$toOldPacking(packed);
             if (oldKey != packed) {
                 Optional<R> oldResult = storage.get(oldKey);
-                if (oldResult.isPresent()) {
+                if (oldResult != null && oldResult.isPresent()) {
                     storage.put(packed, oldResult);
                     storage.remove(oldKey);
                     cir.setReturnValue(oldResult);
